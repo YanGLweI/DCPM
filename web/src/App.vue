@@ -1,14 +1,16 @@
 <template>
-  <router-view />
+  <div class="app-wrapper">
+    <router-view />
+  </div>
 </template>
 
 <script setup lang="ts">
 </script>
 
 <style>
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 </style>
