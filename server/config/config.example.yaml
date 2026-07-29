@@ -1,0 +1,26 @@
+server:
+  port: 8088
+  mode: debug  # debug/release
+
+jwt:
+  secret: "your-jwt-secret-key-change-in-production"  # 生产环境请使用强随机字符串
+  expiry: 24h                                         # Token 有效期
+
+ldap:
+  server: "ldaps://your-dc-server:636"
+  base_dn: "dc=example,dc=com"
+  domain_suffix: "example.com"
+  use_tls: true
+  insecure: true          # 跳过证书验证（生产环境建议设为 false 并配置 cert_path）
+  user_filter: "(sAMAccountName=%s)"
+  username: "service-account@example.com"
+  password: "your-service-account-password"
+  cert_path: "./certificate/ca.crt"
+  max_pwd_age_days: 30    # 密码最大使用天数（与域控组策略一致，当无法从域控获取时使用）
+
+password_policy:
+  min_length: 14
+  require_uppercase: true
+  require_lowercase: true
+  require_digit: true
+  require_special: true
