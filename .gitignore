@@ -32,3 +32,4 @@ logs/
 
 .agents/
 .qoder/
+skills-lock.json
