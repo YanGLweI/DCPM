@@ -31,10 +31,14 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Token 过期或无效，清除本地存储并跳转登录页
-      localStorage.removeItem('token')
-      localStorage.removeItem('username')
-      window.location.href = '/login'
+      // 登录接口的 401 是账号密码错误，不需要跳转，直接抛出
+      const isLoginRequest = error.config?.url?.includes('/auth/login')
+      if (!isLoginRequest) {
+        // Token 过期或无效，清除本地存储并跳转登录页
+        localStorage.removeItem('token')
+        localStorage.removeItem('username')
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }

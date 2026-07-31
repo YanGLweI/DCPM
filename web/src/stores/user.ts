@@ -18,26 +18,32 @@ export const useUserStore = defineStore('user', () => {
 
   // 登录
   async function login(loginData: LoginRequest) {
-    const response = await loginApi(loginData)
-    
-    if (response.data?.status === 'ok') {
-      // 登录成功，保存信息
-      token.value = response.data.token || ''
-      username.value = response.data.username || loginData.username
-      passwordExpiresAt.value = response.data.password_expires_at || ''
-      daysRemaining.value = response.data.days_remaining || 0
-      passwordNeverExpires.value = response.data.password_never_expires || false
+    try {
+      const response = await loginApi(loginData)
       
-      localStorage.setItem('token', token.value)
-      localStorage.setItem('username', username.value)
-      
-      return 'ok'
-    } else if (response.data?.status === 'expired') {
-      // 密码过期
-      sessionStorage.setItem('temp_username', loginData.username)
-      return 'expired'
-    } else {
-      throw new Error(response.data?.message || '登录失败')
+      if (response.data?.status === 'ok') {
+        // 登录成功，保存信息
+        token.value = response.data.token || ''
+        username.value = response.data.username || loginData.username
+        passwordExpiresAt.value = response.data.password_expires_at || ''
+        daysRemaining.value = response.data.days_remaining || 0
+        passwordNeverExpires.value = response.data.password_never_expires || false
+        
+        localStorage.setItem('token', token.value)
+        localStorage.setItem('username', username.value)
+        
+        return 'ok'
+      } else if (response.data?.status === 'expired') {
+        // 密码过期
+        sessionStorage.setItem('temp_username', loginData.username)
+        return 'expired'
+      } else {
+        throw new Error(response.data?.message || '登录失败')
+      }
+    } catch (error: any) {
+      // axios 401 错误：从响应中提取后端返回的错误信息
+      const message = error.response?.data?.message || error.message || '登录失败，请检查账号密码'
+      throw new Error(message)
     }
   }
 
