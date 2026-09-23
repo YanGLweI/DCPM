@@ -32,11 +32,12 @@ func (s *PasswordService) ChangePassword(username, oldPwd, newPwd string) error 
 
 	// 3. 验证旧密码（如果密码未过期）
 	if err := s.ldapService.VerifyPassword(username, oldPwd); err != nil {
-		return fmt.Errorf("旧密码验证失败")
+		return fmt.Errorf("旧密码验证失败：%w", err)
 	}
 
 	// 4. 修改密码
 	if err := s.ldapService.ChangePassword(username, oldPwd, newPwd); err != nil {
+		// 返回 LDAP 原始错误，不重新包装，以便 handler 能正确识别错误类型
 		return err
 	}
 
